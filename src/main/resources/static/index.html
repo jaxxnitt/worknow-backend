@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WorkNow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h2>WorkNow</h2>
+<p>Find urgent work. Get paid fast.</p>
+
+<form id="form">
+    <input id="title" placeholder="Work title" required /><br><br>
+
+    <input id="payment" placeholder="Payment ₹" type="number" required /><br><br>
+
+    <input id="deadline" placeholder="Deadline (Today / Tomorrow)" /><br><br>
+
+    <input id="city" placeholder="Location (City / Area)" required /><br><br>
+
+    <input id="contact" placeholder="Contact (WhatsApp / Phone)" required /><br><br>
+
+    <button type="submit">Post Work</button>
+</form>
+
+<hr>
+
+<div id="list">Loading...</div>
+
+<script>
+    /*
+      Cloud-ready API path:
+      - Local: http://localhost:8080/gigs
+      - Cloud: https://your-domain.com/gigs
+    */
+    const API = "/gigs";
+
+    function renderGigs(data) {
+      if (!data.length) {
+        document.getElementById("list").innerHTML =
+          "<p>No work posted yet.</p>";
+        return;
+      }
+
+      document.getElementById("list").innerHTML =
+        data.map(g => `
+          <div style="margin-bottom: 14px;">
+            <b>${g.title}</b><br>
+            ₹${g.payment} | ${g.deadline || "Anytime"}<br>
+            📍 ${g.city || "Not specified"}<br>
+            📞 ${g.contact}
+          </div>
+        `).join("");
+    }
+
+    function loadGigs() {
+      fetch(API)
+        .then(res => res.json())
+        .then(renderGigs)
+        .catch(() => {
+          document.getElementById("list").innerHTML =
+            "<p>Unable to load work.</p>";
+        });
+    }
+
+    document.getElementById("form").onsubmit = e => {
+      e.preventDefault();
+
+      fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.value,
+          payment: payment.value,
+          deadline: deadline.value,
+          city: city.value,
+          contact: contact.value
+        })
+      }).then(() => {
+        form.reset();
+        loadGigs();
+      });
+    };
+
+    loadGigs();
+</script>
+
+</body>
+</html>
