@@ -18,14 +18,25 @@ public class GigController {
         this.repo = repo;
     }
 
+    // ✅ CREATE GIG (unchanged)
     @PostMapping
     public Gig create(@RequestBody Gig gig) {
         gig.setCreatedAt(LocalDateTime.now());
         return repo.save(gig);
     }
 
+    // ✅ LIST GIGS (WITH OPTIONAL CITY FILTER)
     @GetMapping
-    public List<Gig> list() {
+    public List<Gig> list(@RequestParam(required = false) String city) {
+
+        // If city is provided → filter
+        if (city != null && !city.trim().isEmpty()) {
+            return repo.findTop50ByCityContainingIgnoreCaseOrderByCreatedAtDesc(
+                    city.trim()
+            );
+        }
+
+        // Otherwise → existing behavior
         return repo.findTop50ByOrderByCreatedAtDesc();
     }
 }

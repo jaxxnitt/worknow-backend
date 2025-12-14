@@ -18,8 +18,15 @@ public class Gig {
     private String description;
     private Integer payment;
     private String deadline;
+
+    // 🌍 FREE TEXT CITY (worldwide)
     private String city;
+
     private String contact;
+
+    private LocalDateTime createdAt;
+
+    // ----- Getters & Setters -----
 
     public Long getId() {
         return id;
@@ -84,6 +91,4 @@ public class Gig {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    private LocalDateTime createdAt;
 }

@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface GigRepository extends JpaRepository<Gig, Long> {
-    List<Gig> findTop50ByOrderByCreatedAtDesc();
-}
 
+    // Existing (unchanged)
+    List<Gig> findTop50ByOrderByCreatedAtDesc();
+
+    // ✅ NEW: worldwide city search
+    List<Gig> findTop50ByCityContainingIgnoreCaseOrderByCreatedAtDesc(String city);
+}
