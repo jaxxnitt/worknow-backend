@@ -15,25 +15,30 @@ public class Gig {
     private Long id;
 
     private String title;
+
     private String description;
+
     private Integer payment;
+
     private String deadline;
 
-    // 🌍 FREE TEXT CITY (worldwide)
     private String city;
 
-    private String contact;
+    // name of job poster (temporary, will replace with phone later)
+    private String posterName;
+
+    // whether job is visible on portal
+    private boolean active = true;
+
+    // number of ACTIVE applications (max 10)
+    private int applicationCount = 0;
 
     private LocalDateTime createdAt;
 
-    // ----- Getters & Setters -----
+    // ---------- Getters & Setters ----------
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -76,12 +81,28 @@ public class Gig {
         this.city = city;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPosterName() {
+        return posterName;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPosterName(String posterName) {
+        this.posterName = posterName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public int getApplicationCount() {
+        return applicationCount;
+    }
+
+    public void setApplicationCount(int applicationCount) {
+        this.applicationCount = applicationCount;
     }
 
     public LocalDateTime getCreatedAt() {

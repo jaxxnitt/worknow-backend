@@ -18,25 +18,31 @@ public class GigController {
         this.repo = repo;
     }
 
-    // ✅ CREATE GIG (unchanged)
+    // ✅ CREATE GIG
     @PostMapping
     public Gig create(@RequestBody Gig gig) {
+
         gig.setCreatedAt(LocalDateTime.now());
+
+        // ensure new job is active
+        gig.setActive(true);
+
         return repo.save(gig);
     }
 
-    // ✅ LIST GIGS (WITH OPTIONAL CITY FILTER)
+    // ✅ LIST GIGS (HOMEPAGE + CITY SEARCH)
     @GetMapping
     public List<Gig> list(@RequestParam(required = false) String city) {
 
-        // If city is provided → filter
+        // ✅ City filter (search)
         if (city != null && !city.trim().isEmpty()) {
-            return repo.findTop50ByCityContainingIgnoreCaseOrderByCreatedAtDesc(
-                    city.trim()
-            );
+            return repo
+                    .findTop50ByActiveTrueAndCityContainingIgnoreCaseOrderByCreatedAtDesc(
+                            city.trim()
+                    );
         }
 
-        // Otherwise → existing behavior
-        return repo.findTop50ByOrderByCreatedAtDesc();
+        // ✅ Homepage: show latest ACTIVE jobs
+        return repo.findTop50ByActiveTrueOrderByCreatedAtDesc();
     }
 }

@@ -4,12 +4,16 @@ import com.worknow.backend.model.Gig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GigRepository extends JpaRepository<Gig, Long> {
 
-    // Existing (unchanged)
-    List<Gig> findTop50ByOrderByCreatedAtDesc();
+    // ✅ Homepage: show only ACTIVE jobs
+    List<Gig> findTop50ByActiveTrueOrderByCreatedAtDesc();
 
-    // ✅ NEW: worldwide city search
-    List<Gig> findTop50ByCityContainingIgnoreCaseOrderByCreatedAtDesc(String city);
+    // ✅ City search (case-insensitive, worldwide)
+    List<Gig> findTop50ByActiveTrueAndCityContainingIgnoreCaseOrderByCreatedAtDesc(String city);
+
+    // ✅ Manage job posting (poster side)
+    Optional<Gig> findByIdAndPosterName(Long id, String posterName);
 }
