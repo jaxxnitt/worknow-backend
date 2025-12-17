@@ -16,4 +16,7 @@ public interface GigRepository extends JpaRepository<Gig, Long> {
 
     // ✅ Manage job posting (poster side)
     Optional<Gig> findByIdAndPosterName(Long id, String posterName);
+
+    List<Gig> findByPosterNameIgnoreCaseOrderByCreatedAtDesc(String posterName);
+
 }

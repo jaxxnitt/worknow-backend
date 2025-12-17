@@ -20,24 +20,31 @@ public class ManageController {
         this.gigRepo = gigRepo;
     }
 
-    // ================= CURRENT APPLICANT =================
-    @GetMapping("/gigs/{gigId}/current-applicant")
-    public Application currentApplicant(
-            @PathVariable Long gigId,
-            @RequestParam String posterName
-    ) {
-        // authorize poster
-        gigRepo.findByIdAndPosterName(gigId, posterName)
-                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+    // =====================================================
+    // 🆕 STEP 1: GET ALL JOBS BY POSTER NAME
+    // =====================================================
+    @GetMapping("/manage/jobs")
+    public List<Gig> getJobsByPoster(@RequestParam String posterName) {
+        return gigRepo.findByPosterNameIgnoreCaseOrderByCreatedAtDesc(
+                posterName.trim()
+        );
+    }
 
-        // first unprocessed applicant
+    // =====================================================
+    // 🆕 STEP 2: GET CURRENT APPLICANT (NO POSTER NAME NEEDED)
+    // =====================================================
+    @GetMapping("/manage/gigs/{gigId}/current-applicant")
+    public Application currentApplicant(@PathVariable Long gigId) {
+
         List<Application> pending =
                 appRepo.findByGigIdAndProcessedFalseOrderByIdAsc(gigId);
 
         return pending.isEmpty() ? null : pending.get(0);
     }
 
-    // ================= REJECT =================
+    // =====================================================
+    // REJECT (UNCHANGED LOGIC)
+    // =====================================================
     @PostMapping("/applications/{id}/reject")
     public void reject(@PathVariable Long id) {
 
@@ -47,7 +54,6 @@ public class ManageController {
         current.setProcessed(true);
         appRepo.save(current);
 
-        // decrease count & reopen job if needed
         Gig gig = gigRepo.findById(current.getGigId()).orElseThrow();
         gig.setApplicationCount(
                 Math.max(0, gig.getApplicationCount() - 1)
@@ -60,7 +66,9 @@ public class ManageController {
         gigRepo.save(gig);
     }
 
-    // ================= HIRE =================
+    // =====================================================
+    // HIRE (UNCHANGED LOGIC)
+    // =====================================================
     @PostMapping("/applications/{id}/hire")
     public void hire(@PathVariable Long id) {
 
@@ -70,12 +78,10 @@ public class ManageController {
         hired.setProcessed(true);
         appRepo.save(hired);
 
-        // permanently close job
         Gig gig = gigRepo.findById(hired.getGigId()).orElseThrow();
         gig.setActive(false);
         gigRepo.save(gig);
 
-        // reject all remaining applicants
         List<Application> rest =
                 appRepo.findByGigIdAndProcessedFalseOrderByIdAsc(
                         hired.getGigId()
@@ -85,3 +91,4 @@ public class ManageController {
         appRepo.saveAll(rest);
     }
 }
+
