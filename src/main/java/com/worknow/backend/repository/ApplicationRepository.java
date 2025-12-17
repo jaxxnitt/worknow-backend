@@ -11,21 +11,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     // ===== EXISTING (KEEP) =====
 
-    long countByGigId(Long gigId);
 
-    // ===== REQUIRED FOR ManageController =====
 
-    // Used in /current-applicant
-    Optional<Application> findByGigIdAndStatus(
-            Long gigId,
-            ApplicationStatus status
-    );
-
-    // Used to get PENDING queue in order
-    List<Application> findByGigIdAndStatusOrderByAppliedAtAsc(
-            Long gigId,
-            ApplicationStatus status
-    );
 
     // (Optional future use — safe to keep)
     List<Application> findByGigIdAndProcessedFalseOrderByIdAsc(Long gigId);
