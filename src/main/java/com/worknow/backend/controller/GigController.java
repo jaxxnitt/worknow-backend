@@ -29,21 +29,17 @@ public class GigController {
         gig.setCreatedAt(now);
         gig.setActive(true);
 
-        // 🔐 derive expiry from deadline
-        if ("Today".equalsIgnoreCase(gig.getDeadline())) {
-            gig.setExpiresAt(
-                    LocalDate.now().atTime(23, 59, 59)
-            );
-        } else if ("Tomorrow".equalsIgnoreCase(gig.getDeadline())) {
-            gig.setExpiresAt(
-                    LocalDate.now().plusDays(1).atTime(23, 59, 59)
-            );
+        // ✅ Convert "Today / Tomorrow" into real expiry
+        if ("Tomorrow".equalsIgnoreCase(gig.getDeadline())) {
+            gig.setExpiresAt(now.plusHours(48));
         } else {
-            throw new RuntimeException("Invalid deadline value");
+            // Default = Today
+            gig.setExpiresAt(now.plusHours(24));
         }
 
         return repo.save(gig);
     }
+
 
     // ===============================
     // LIST GIGS (HOMEPAGE + SEARCH)
@@ -53,7 +49,6 @@ public class GigController {
 
         LocalDateTime now = LocalDateTime.now();
 
-        // 🔹 city search
         if (city != null && !city.trim().isEmpty()) {
             return repo
                     .findTop50ByActiveTrueAndExpiresAtAfterAndCityContainingIgnoreCaseOrderByCreatedAtDesc(
@@ -62,10 +57,7 @@ public class GigController {
                     );
         }
 
-        // 🔹 homepage
-        return repo
-                .findTop50ByActiveTrueAndExpiresAtAfterOrderByCreatedAtDesc(
-                        now
-                );
+        return repo.findTop50ByActiveTrueAndExpiresAtAfterOrderByCreatedAtDesc(now);
     }
+
 }
