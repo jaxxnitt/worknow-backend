@@ -4,6 +4,7 @@ import com.worknow.backend.model.Gig;
 import com.worknow.backend.repository.GigRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,31 +19,53 @@ public class GigController {
         this.repo = repo;
     }
 
-    // ✅ CREATE GIG
+    // ===============================
+    // CREATE GIG
+    // ===============================
     @PostMapping
     public Gig create(@RequestBody Gig gig) {
 
-        gig.setCreatedAt(LocalDateTime.now());
-
-        // ensure new job is active
+        LocalDateTime now = LocalDateTime.now();
+        gig.setCreatedAt(now);
         gig.setActive(true);
+
+        // 🔐 derive expiry from deadline
+        if ("Today".equalsIgnoreCase(gig.getDeadline())) {
+            gig.setExpiresAt(
+                    LocalDate.now().atTime(23, 59, 59)
+            );
+        } else if ("Tomorrow".equalsIgnoreCase(gig.getDeadline())) {
+            gig.setExpiresAt(
+                    LocalDate.now().plusDays(1).atTime(23, 59, 59)
+            );
+        } else {
+            throw new RuntimeException("Invalid deadline value");
+        }
 
         return repo.save(gig);
     }
 
-    // ✅ LIST GIGS (HOMEPAGE + CITY SEARCH)
+    // ===============================
+    // LIST GIGS (HOMEPAGE + SEARCH)
+    // ===============================
     @GetMapping
     public List<Gig> list(@RequestParam(required = false) String city) {
 
-        // ✅ City filter (search)
+        LocalDateTime now = LocalDateTime.now();
+
+        // 🔹 city search
         if (city != null && !city.trim().isEmpty()) {
             return repo
-                    .findTop50ByActiveTrueAndCityContainingIgnoreCaseOrderByCreatedAtDesc(
+                    .findTop50ByActiveTrueAndExpiresAtAfterAndCityContainingIgnoreCaseOrderByCreatedAtDesc(
+                            now,
                             city.trim()
                     );
         }
 
-        // ✅ Homepage: show latest ACTIVE jobs
-        return repo.findTop50ByActiveTrueOrderByCreatedAtDesc();
+        // 🔹 homepage
+        return repo
+                .findTop50ByActiveTrueAndExpiresAtAfterOrderByCreatedAtDesc(
+                        now
+                );
     }
 }

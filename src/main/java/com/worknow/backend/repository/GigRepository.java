@@ -14,8 +14,7 @@ public interface GigRepository extends JpaRepository<Gig, Long> {
     // ✅ City search (case-insensitive, worldwide)
     List<Gig> findTop50ByActiveTrueAndCityContainingIgnoreCaseOrderByCreatedAtDesc(String city);
 
-    // ✅ Manage job posting (poster side)
-    Optional<Gig> findByIdAndPosterName(Long id, String posterName);
+
 
     List<Gig> findByPosterNameIgnoreCaseOrderByCreatedAtDesc(String posterName);
 
