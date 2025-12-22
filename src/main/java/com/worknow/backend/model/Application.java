@@ -2,6 +2,8 @@ package com.worknow.backend.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Application {
 
@@ -56,4 +58,6 @@ public class Application {
     public void setProcessed(boolean processed) {
         this.processed = processed;
     }
+
+
 }

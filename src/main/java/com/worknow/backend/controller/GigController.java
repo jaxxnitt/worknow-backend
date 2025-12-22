@@ -29,7 +29,7 @@ public class GigController {
         gig.setCreatedAt(now);
         gig.setActive(true);
 
-        // ✅ Convert "Today / Tomorrow" into real expiry
+        // Convert "Today / Tomorrow" into real expiry
         if ("Tomorrow".equalsIgnoreCase(gig.getDeadline())) {
             gig.setExpiresAt(now.plusHours(48));
         } else {

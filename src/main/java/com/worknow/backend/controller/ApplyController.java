@@ -2,8 +2,10 @@ package com.worknow.backend.controller;
 
 import com.worknow.backend.model.Application;
 import com.worknow.backend.model.Gig;
+import com.worknow.backend.model.User;
 import com.worknow.backend.repository.ApplicationRepository;
 import com.worknow.backend.repository.GigRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +18,10 @@ public class ApplyController {
     private final ApplicationRepository appRepo;
     private final GigRepository gigRepo;
 
-    public ApplyController(ApplicationRepository appRepo, GigRepository gigRepo) {
+    public ApplyController(
+            ApplicationRepository appRepo,
+            GigRepository gigRepo
+    ) {
         this.appRepo = appRepo;
         this.gigRepo = gigRepo;
     }
@@ -24,9 +29,13 @@ public class ApplyController {
     @PostMapping("/{gigId}")
     public String apply(
             @PathVariable Long gigId,
-            @RequestParam String applicantName,
-            @RequestParam(required = false) String note
+            @RequestParam(required = false) String note,
+            @AuthenticationPrincipal User user
     ) {
+        if (user == null) {
+            return "Unauthorized";
+        }
+
         Gig gig = gigRepo.findById(gigId)
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 
@@ -34,19 +43,16 @@ public class ApplyController {
             return "Job is closed";
         }
 
-        // ✅ CREATE APPLICATION
         Application app = new Application();
         app.setGigId(gigId);
-        app.setApplicantName(applicantName);
+        app.setApplicantName(user.getName());
         app.setNote(note);
         app.setProcessed(false);
 
         appRepo.save(app);
 
-        // ✅ INCREMENT APPLICATION COUNT
         gig.setApplicationCount(gig.getApplicationCount() + 1);
 
-        // ✅ CLOSE JOB AT 10
         if (gig.getApplicationCount() >= 10) {
             gig.setActive(false);
         }
