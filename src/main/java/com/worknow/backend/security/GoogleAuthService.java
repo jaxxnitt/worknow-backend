@@ -10,7 +10,7 @@ import java.util.Collections;
 public class GoogleAuthService {
 
     private static final String CLIENT_ID =
-            "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+            "753832568296-ivqulfa902mt7uo9k4jn3aqsbardco7a.apps.googleusercontent.com";
 
     public static GoogleIdToken.Payload verify(String idTokenString)
             throws Exception {
