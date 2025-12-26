@@ -1,10 +1,11 @@
 package com.worknow.backend.controller;
 
 import com.worknow.backend.model.Gig;
+import com.worknow.backend.model.User;
 import com.worknow.backend.repository.GigRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,12 +21,21 @@ public class GigController {
     }
 
     // ===============================
-    // CREATE GIG
+    // CREATE GIG (AUTH REQUIRED)
     // ===============================
     @PostMapping
-    public Gig create(@RequestBody Gig gig) {
+    public Gig create(
+            @RequestBody Gig gig,
+            @AuthenticationPrincipal User user
+    ) {
+        if (user == null) {
+            throw new RuntimeException("Unauthorized");
+        }
 
         LocalDateTime now = LocalDateTime.now();
+
+        // Server owns these fields
+        gig.setPosterName(user.getName());
         gig.setCreatedAt(now);
         gig.setActive(true);
 
@@ -33,16 +43,14 @@ public class GigController {
         if ("Tomorrow".equalsIgnoreCase(gig.getDeadline())) {
             gig.setExpiresAt(now.plusHours(48));
         } else {
-            // Default = Today
             gig.setExpiresAt(now.plusHours(24));
         }
 
         return repo.save(gig);
     }
 
-
     // ===============================
-    // LIST GIGS (HOMEPAGE + SEARCH)
+    // LIST GIGS (PUBLIC)
     // ===============================
     @GetMapping
     public List<Gig> list(@RequestParam(required = false) String city) {
@@ -59,5 +67,4 @@ public class GigController {
 
         return repo.findTop50ByActiveTrueAndExpiresAtAfterOrderByCreatedAtDesc(now);
     }
-
 }
