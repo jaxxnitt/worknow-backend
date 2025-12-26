@@ -4,11 +4,17 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /*
- * DO NOT name the table "user"
- * "user" is a reserved keyword in H2, Postgres, MySQL
+ * IMPORTANT:
+ * Do NOT name the table "user".
+ * "user" is a reserved keyword in H2, Postgres, MySQL.
  */
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "providerUserId")
+        }
+)
 public class User {
 
     @Id
@@ -22,7 +28,8 @@ public class User {
     private String provider;
 
     /*
-     * Unique ID from the OAuth provider
+     * Unique user ID from the OAuth provider.
+     * Example: Google "sub" field.
      */
     @Column(nullable = false, unique = true)
     private String providerUserId;
@@ -35,16 +42,17 @@ public class User {
     private String avatarUrl;
 
     /*
-     * Store enum as STRING for DB portability
-     * Avoid native SQL enum types
+     * Store enum as STRING for portability.
+     * Never use native SQL enums.
      */
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(nullable = false, length = 20)
     private UserMode mode;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // ---------- getters & setters ----------
+    // ---------------- getters & setters ----------------
 
     public Long getId() {
         return id;
