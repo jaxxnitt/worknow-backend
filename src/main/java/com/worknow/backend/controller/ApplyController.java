@@ -5,10 +5,12 @@ import com.worknow.backend.model.Gig;
 import com.worknow.backend.model.User;
 import com.worknow.backend.repository.ApplicationRepository;
 import com.worknow.backend.repository.GigRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -27,21 +29,27 @@ public class ApplyController {
     }
 
     @PostMapping("/{gigId}")
-    public String apply(
+    public ResponseEntity<?> apply(
             @PathVariable Long gigId,
-            @RequestParam(required = false) String note,
+            @RequestBody(required = false) Map<String, String> body,
             @AuthenticationPrincipal User user
     ) {
         if (user == null) {
-            return "Unauthorized";
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication required");
         }
 
         Gig gig = gigRepo.findById(gigId)
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 
         if (!gig.isActive()) {
-            return "Job is closed";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Job is closed");
         }
+
+        String note = body != null ? body.get("note") : null;
 
         Application app = new Application();
         app.setGigId(gigId);
@@ -52,13 +60,12 @@ public class ApplyController {
         appRepo.save(app);
 
         gig.setApplicationCount(gig.getApplicationCount() + 1);
-
         if (gig.getApplicationCount() >= 10) {
             gig.setActive(false);
         }
 
         gigRepo.save(gig);
 
-        return "Applied successfully";
+        return ResponseEntity.ok("Applied successfully");
     }
 }
