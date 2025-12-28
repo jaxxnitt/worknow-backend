@@ -44,6 +44,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain chain
     ) throws ServletException, IOException {
 
+
+        System.out.println("=== JWT FILTER HIT ===");
+        System.out.println("Path: " + request.getRequestURI());
+        System.out.println("Authorization: " + request.getHeader("Authorization"));
+
         String path = request.getRequestURI();
 
         boolean isProtected = PROTECTED_PATH_PREFIXES
