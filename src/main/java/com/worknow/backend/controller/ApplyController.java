@@ -44,12 +44,8 @@ public class ApplyController {
                     .body("Authentication required");
         }
 
-        // JWT subject = Google "sub"
-        String providerUserId = authentication.getName();
-
-        User user = userRepo
-                .findByProviderAndProviderUserId("google", providerUserId)
-                .orElse(null);
+        // Get User directly from the authentication principal (set by JwtAuthFilter)
+        User user = (User) authentication.getPrincipal();
 
         if (user == null) {
             return ResponseEntity
