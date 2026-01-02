@@ -14,6 +14,7 @@ public class Gig {
     private Integer payment;
     private String city;
     private String posterName;
+    private Long posterId;
 
     // "Today" or "Tomorrow" (UI-only meaning)
     private String deadline;
@@ -42,6 +43,9 @@ public class Gig {
 
     public String getPosterName() { return posterName; }
     public void setPosterName(String posterName) { this.posterName = posterName; }
+
+    public Long getPosterId() { return posterId; }
+    public void setPosterId(Long posterId) { this.posterId = posterId; }
 
     public String getDeadline() { return deadline; }
     public void setDeadline(String deadline) { this.deadline = deadline; }

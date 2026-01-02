@@ -18,4 +18,6 @@ public interface GigRepository extends JpaRepository<Gig, Long> {
     );
 
     List<Gig> findByPosterNameIgnoreCaseOrderByCreatedAtDesc(String posterName);
+
+    List<Gig> findByPosterIdOrderByCreatedAtDesc(Long posterId);
 }

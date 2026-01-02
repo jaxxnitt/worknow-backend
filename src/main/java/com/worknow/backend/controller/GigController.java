@@ -35,6 +35,7 @@ public class GigController {
         LocalDateTime now = LocalDateTime.now();
 
         // Server owns these fields
+        gig.setPosterId(user.getId());
         gig.setPosterName(user.getName());
         gig.setCreatedAt(now);
         gig.setActive(true);

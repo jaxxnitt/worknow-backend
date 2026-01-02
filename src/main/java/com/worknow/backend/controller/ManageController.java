@@ -34,9 +34,7 @@ public class ManageController {
             throw new RuntimeException("Unauthorized");
         }
 
-        return gigRepo.findByPosterNameIgnoreCaseOrderByCreatedAtDesc(
-                user.getName()
-        );
+        return gigRepo.findByPosterIdOrderByCreatedAtDesc(user.getId());
     }
 
     @GetMapping("/gigs/{gigId}/current-applicant")
@@ -51,7 +49,7 @@ public class ManageController {
         Gig gig = gigRepo.findById(gigId)
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 
-        if (!gig.getPosterName().equalsIgnoreCase(user.getName())) {
+        if (!user.getId().equals(gig.getPosterId())) {
             throw new RuntimeException("Unauthorized");
         }
 
@@ -76,7 +74,7 @@ public class ManageController {
         Gig gig = gigRepo.findById(current.getGigId())
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 
-        if (!gig.getPosterName().equalsIgnoreCase(user.getName())) {
+        if (!user.getId().equals(gig.getPosterId())) {
             throw new RuntimeException("Unauthorized");
         }
 
@@ -109,7 +107,7 @@ public class ManageController {
         Gig gig = gigRepo.findById(hired.getGigId())
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 
-        if (!gig.getPosterName().equalsIgnoreCase(user.getName())) {
+        if (!user.getId().equals(gig.getPosterId())) {
             throw new RuntimeException("Unauthorized");
         }
 
