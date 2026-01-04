@@ -13,10 +13,16 @@ public class Application {
 
     private Long gigId;
 
+    private Long applicantId;
+
     private String applicantName;
 
     @Column(length = 1000)
     private String note;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     // ✅ REQUIRED FOR REJECT / HIRE FLOW
     private boolean processed = false;
@@ -33,6 +39,14 @@ public class Application {
 
     public void setGigId(Long gigId) {
         this.gigId = gigId;
+    }
+
+    public Long getApplicantId() {
+        return applicantId;
+    }
+
+    public void setApplicantId(Long applicantId) {
+        this.applicantId = applicantId;
     }
 
     public String getApplicantName() {
@@ -59,5 +73,11 @@ public class Application {
         this.processed = processed;
     }
 
+    public ApplicationStatus getStatus() {
+        return status;
+    }
 
+    public void setStatus(ApplicationStatus status) {
+        this.status = status;
+    }
 }

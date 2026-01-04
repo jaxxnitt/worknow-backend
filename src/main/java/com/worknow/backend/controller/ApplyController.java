@@ -66,6 +66,7 @@ public class ApplyController {
 
         Application app = new Application();
         app.setGigId(gigId);
+        app.setApplicantId(user.getId());
         app.setApplicantName(user.getName());
         app.setNote(note);
         app.setProcessed(false);

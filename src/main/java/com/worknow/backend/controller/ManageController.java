@@ -1,6 +1,7 @@
 package com.worknow.backend.controller;
 
 import com.worknow.backend.model.Application;
+import com.worknow.backend.model.ApplicationStatus;
 import com.worknow.backend.model.Gig;
 import com.worknow.backend.model.User;
 import com.worknow.backend.repository.ApplicationRepository;
@@ -79,6 +80,7 @@ public class ManageController {
         }
 
         current.setProcessed(true);
+        current.setStatus(ApplicationStatus.REJECTED);
         appRepo.save(current);
 
         gig.setApplicationCount(
@@ -112,6 +114,7 @@ public class ManageController {
         }
 
         hired.setProcessed(true);
+        hired.setStatus(ApplicationStatus.HIRED);
         appRepo.save(hired);
 
         gig.setActive(false);
@@ -122,7 +125,37 @@ public class ManageController {
                         hired.getGigId()
                 );
 
-        rest.forEach(a -> a.setProcessed(true));
+        rest.forEach(a -> {
+            a.setProcessed(true);
+            a.setStatus(ApplicationStatus.REJECTED);
+        });
         appRepo.saveAll(rest);
+    }
+
+    @PostMapping("/applications/{id}/complete")
+    public void complete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        if (user == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        Application app = appRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+
+        Gig gig = gigRepo.findById(app.getGigId())
+                .orElseThrow(() -> new RuntimeException("Gig not found"));
+
+        if (!user.getId().equals(gig.getPosterId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        if (app.getStatus() != ApplicationStatus.HIRED) {
+            throw new RuntimeException("Can only complete hired applications");
+        }
+
+        app.setStatus(ApplicationStatus.COMPLETED);
+        appRepo.save(app);
     }
 }

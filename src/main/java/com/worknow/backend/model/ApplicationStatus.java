@@ -4,5 +4,6 @@ public enum ApplicationStatus {
     PENDING,
     VISIBLE,
     REJECTED,
-    HIRED
+    HIRED,
+    COMPLETED
 }
