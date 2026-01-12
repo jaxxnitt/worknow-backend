@@ -30,7 +30,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final Set<String> PROTECTED_PATH_PREFIXES = Set.of(
             "/apply",
             "/manage",
-            "/post"
+            "/post",
+            "/portfolio",
+            "/me"
     );
 
     public JwtAuthFilter(UserRepository userRepo) {

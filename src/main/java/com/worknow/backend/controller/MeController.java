@@ -44,6 +44,8 @@ public class MeController {
         response.setEmail(user.getEmail());
         response.setMode(user.getMode().name());
         response.setAvatar(user.getAvatarUrl());
+        response.setPortfolioVideoUrl(user.getPortfolioVideoUrl());
+        response.setHasPortfolioVideo(user.getPortfolioVideoUrl() != null && !user.getPortfolioVideoUrl().isEmpty());
 
         Double workerRating = ratingRepo.findAverageRatingByUserIdAndType(user.getId(), RatingType.WORKER_RATING);
         Long workerRatingCount = ratingRepo.countByRatedUserIdAndType(user.getId(), RatingType.WORKER_RATING);

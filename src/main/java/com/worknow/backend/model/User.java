@@ -41,6 +41,9 @@ public class User {
 
     private String avatarUrl;
 
+    @Column(length = 500)
+    private String portfolioVideoUrl;
+
     /*
      * Store enum as STRING for portability.
      * Never use native SQL enums.
@@ -96,6 +99,14 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getPortfolioVideoUrl() {
+        return portfolioVideoUrl;
+    }
+
+    public void setPortfolioVideoUrl(String portfolioVideoUrl) {
+        this.portfolioVideoUrl = portfolioVideoUrl;
     }
 
     public UserMode getMode() {

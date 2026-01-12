@@ -53,6 +53,16 @@ public class ApplyController {
                     .body("User not found");
         }
 
+        // Portfolio video is required to apply for jobs
+        if (user.getPortfolioVideoUrl() == null || user.getPortfolioVideoUrl().isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(
+                            "error", "PORTFOLIO_VIDEO_REQUIRED",
+                            "message", "You must upload a portfolio video before applying to jobs"
+                    ));
+        }
+
         Gig gig = gigRepo.findById(gigId)
                 .orElseThrow(() -> new RuntimeException("Gig not found"));
 

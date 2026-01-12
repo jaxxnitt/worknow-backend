@@ -7,6 +7,8 @@ public class ProfileStatsResponse {
     private String email;
     private String mode;
     private String avatar;
+    private String portfolioVideoUrl;
+    private boolean hasPortfolioVideo;
 
     private Double workerRating;
     private Long workerRatingCount;
@@ -63,6 +65,22 @@ public class ProfileStatsResponse {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPortfolioVideoUrl() {
+        return portfolioVideoUrl;
+    }
+
+    public void setPortfolioVideoUrl(String portfolioVideoUrl) {
+        this.portfolioVideoUrl = portfolioVideoUrl;
+    }
+
+    public boolean isHasPortfolioVideo() {
+        return hasPortfolioVideo;
+    }
+
+    public void setHasPortfolioVideo(boolean hasPortfolioVideo) {
+        this.hasPortfolioVideo = hasPortfolioVideo;
     }
 
     public Double getWorkerRating() {

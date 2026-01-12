@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/gigs/**").authenticated()
                         .requestMatchers("/apply/**").authenticated()
                         .requestMatchers("/manage/**").authenticated()
+                        .requestMatchers("/portfolio/**").authenticated()
+                        .requestMatchers("/me/**").authenticated()
 
                         .anyRequest().denyAll()
                 )
