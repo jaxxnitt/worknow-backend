@@ -28,6 +28,9 @@ public class Gig {
 
     private LocalDateTime createdAt;
 
+    @Column(length = 500)
+    private String videoUrl;
+
     // ---------- getters & setters ----------
 
     public Long getId() { return id; }
@@ -65,4 +68,7 @@ public class Gig {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
 }

@@ -37,6 +37,25 @@ public class CloudinaryService {
     }
 
     /**
+     * Uploads a video to Cloudinary for a gig posting.
+     *
+     * @param file  The video file to upload
+     * @param gigId The gig ID (used for organizing uploads)
+     * @return The secure URL of the uploaded video
+     */
+    public String uploadGigVideo(MultipartFile file, Long gigId) throws IOException {
+        Map<String, Object> options = ObjectUtils.asMap(
+                "resource_type", "video",
+                "folder", "worknow/gig-videos",
+                "public_id", "gig_" + gigId + "_video_" + System.currentTimeMillis(),
+                "overwrite", true
+        );
+
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
+        return (String) uploadResult.get("secure_url");
+    }
+
+    /**
      * Deletes a video from Cloudinary by extracting public_id from URL.
      *
      * @param videoUrl The Cloudinary video URL
